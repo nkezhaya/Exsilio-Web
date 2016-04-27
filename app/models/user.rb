@@ -1,4 +1,7 @@
 class User < ActiveRecord::Base
+  attr_reader :picture_remote_url
+  has_attached_file :picture
+
   def self.from_token(token)
     graph = Koala::Facebook::API.new(token)
     me = graph.api("/me?fields=id,first_name,last_name,email,gender,picture")
@@ -7,7 +10,13 @@ class User < ActiveRecord::Base
       user.email = me["email"]
       user.first_name = me["first_name"]
       user.last_name = me["last_name"]
+      uesr.picture_remote_url = me["picture"]["data"]["url"] rescue nil
       user.token = token
     end
+  end
+
+  def picture_remote_url=(url)
+    self.picture = URI.parse(url) if url.present?
+    @picture_remote_url = url
   end
 end
