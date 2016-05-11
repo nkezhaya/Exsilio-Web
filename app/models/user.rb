@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
   attr_reader :picture_remote_url
   has_attached_file :picture
 
+  has_many :tours
+
   def self.from_token(token)
     graph = Koala::Facebook::API.new(token)
     me = graph.api("/me?fields=id,first_name,last_name,email,gender,picture")
