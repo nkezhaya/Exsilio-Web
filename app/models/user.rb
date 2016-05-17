@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
       user.email = me["email"]
       user.first_name = me["first_name"]
       user.last_name = me["last_name"]
-      uesr.picture_remote_url = me["picture"]["data"]["url"] rescue nil
+      user.picture_remote_url = me["picture"]["data"]["url"] rescue nil
       user.token = token
     end
   end
