@@ -6,7 +6,7 @@ class ApiController < ApplicationController
   protected
   def authenticate_user!
     token = request.headers["HTTP_X_TOKEN"]
-    user = User.find_by(token: token) || User.from_token(token)
+    user = User.find_by(token: token) || User.from_token(token) if token.present?
 
     if !user
       render json: { status: "Authentication error." }, status: :unauthorized

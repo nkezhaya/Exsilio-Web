@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
   has_many :tours
 
   def self.from_token(token)
+    return false if token.blank?
+
     graph = Koala::Facebook::API.new(token)
     me = graph.api("/me?fields=id,first_name,last_name,email,gender,picture")
 
