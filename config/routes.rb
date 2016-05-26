@@ -4,5 +4,7 @@ Rails.application.routes.draw do
 
   root "api#index"
 
-  resources :tours
+  resources :tours do
+    resources :waypoints, only: [:update, :destroy]
+  end
 end

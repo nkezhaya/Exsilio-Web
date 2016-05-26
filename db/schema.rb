@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160517163218) do
+ActiveRecord::Schema.define(version: 20160519164203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20160517163218) do
     t.string   "description"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.jsonb    "directions"
   end
 
   add_index "tours", ["user_id"], name: "index_tours_on_user_id", using: :btree
@@ -42,12 +43,14 @@ ActiveRecord::Schema.define(version: 20160517163218) do
     t.integer  "tour_id"
     t.integer  "position"
     t.string   "name"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.string   "image_file_name"
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
+    t.decimal  "latitude",           precision: 9, scale: 6
+    t.decimal  "longitude",          precision: 9, scale: 6
   end
 
   add_index "waypoints", ["position"], name: "index_waypoints_on_position", using: :btree
