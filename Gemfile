@@ -10,6 +10,8 @@ gem "rest-client"
 gem "figaro"
 gem "geocoder"
 
+gem "rails_12factor"
+
 gem "jquery-rails"
 gem "jbuilder", "~> 2.0"
 
