@@ -29,6 +29,18 @@ class Tour < ActiveRecord::Base
     super(options)
   end
 
+  def reposition_waypoints!(ids)
+    position = 0
+
+    ids.each do |id|
+      self.waypoints.find(id).update_column(:position, position)
+
+      position += 1
+    end
+
+    return true
+  end
+
   def polyline
     directions["routes"][0]["overview_polyline"]["points"] rescue nil
   end

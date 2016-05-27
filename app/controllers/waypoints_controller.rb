@@ -12,6 +12,12 @@ class WaypointsController < ApiController
     end
   end
 
+  def reposition
+    @tour.reposition_waypoints!(params["waypoints"])
+
+    head :ok
+  end
+
   def destroy
     waypoint = @tour.waypoints.find(params[:id])
 
