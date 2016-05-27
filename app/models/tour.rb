@@ -68,6 +68,10 @@ class Tour < ActiveRecord::Base
       url << "&waypoints=#{waypoint_coordinates.join("|")}"
     end
 
-    self.directions = RestClient.get(url)
+    begin
+      self.directions = RestClient.get(url)
+    rescue
+      puts "Exception: #{url}"
+    end
   end
 end
