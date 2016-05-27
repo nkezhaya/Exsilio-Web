@@ -8,6 +8,7 @@ gem "koala"
 gem "paperclip"
 gem "rest-client"
 gem "figaro"
+gem "geocoder"
 
 gem "jquery-rails"
 gem "jbuilder", "~> 2.0"
