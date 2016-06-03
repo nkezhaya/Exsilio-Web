@@ -1,4 +1,6 @@
 class Tour < ActiveRecord::Base
+  include PgSearch
+
   belongs_to :user
 
   has_many :waypoints
@@ -8,6 +10,13 @@ class Tour < ActiveRecord::Base
   accepts_nested_attributes_for :waypoints
 
   before_save :set_directions
+
+  pg_search_scope :search,
+    against: [:name, :description],
+    associated_against: {
+      waypoints: [:name],
+      user: [:first_name, :last_name]
+    }
 
   def as_json(options = {})
     full = options.delete(:full) == true

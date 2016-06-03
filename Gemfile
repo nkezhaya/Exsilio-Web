@@ -9,6 +9,8 @@ gem "paperclip"
 gem "rest-client"
 gem "figaro"
 gem "geocoder"
+gem "pg_search"
+gem "kaminari"
 
 gem "rails_12factor"
 

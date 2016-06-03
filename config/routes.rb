@@ -5,10 +5,10 @@ Rails.application.routes.draw do
   root "api#index"
 
   resources :tours do
+    get "search", on: :collection
+
     resources :waypoints, only: [:update, :destroy] do
-      collection do
-        put "reposition"
-      end
+      put "reposition", on: :collection
     end
   end
 end

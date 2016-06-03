@@ -5,9 +5,15 @@ class ToursController < ApiController
     render json: current_user.tours
   end
 
+  def search
+    tours = Tour.search(params[:query])
+
+    render json: { total: tours.count, tours: Kaminari.paginate_array(tours).page(params[:page]).per(10) }
+  end
+
   def show
     tour = current_user.tours.find(params[:id])
-    
+
     render json: tour, full: true
   end
 
