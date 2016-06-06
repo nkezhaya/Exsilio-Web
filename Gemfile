@@ -11,6 +11,7 @@ gem "figaro"
 gem "geocoder"
 gem "pg_search"
 gem "kaminari"
+gem "aws-sdk"
 
 gem "rails_12factor"
 

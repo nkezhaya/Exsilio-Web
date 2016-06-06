@@ -29,7 +29,8 @@ class Tour < ActiveRecord::Base
       methods: :image_url
     }
 
-    options.merge! include: { waypoints: waypoints, user: user }, methods: [:polyline, :duration]
+    options.merge! include: { waypoints: waypoints, user: user },
+      methods: [:polyline, :duration, :duration_short, :distance, :display_image_url]
 
     if !full
       options.merge! except: :directions
@@ -50,6 +51,12 @@ class Tour < ActiveRecord::Base
     return true
   end
 
+  def display_image_url
+    self.waypoints.find { |waypoint|
+      waypoint.image.present?
+    }.try(:image).try(:url, :original)
+  end
+
   def polyline
     directions["routes"][0]["overview_polyline"]["points"] rescue nil
   end
@@ -64,6 +71,26 @@ class Tour < ActiveRecord::Base
     end
 
     ActionController::Base.helpers.distance_of_time_in_words(total_seconds.seconds)
+  end
+
+  def duration_short
+    long_duration = self.duration
+
+    return "" if long_duration.blank?
+
+    long_duration.gsub(" hours", "h").gsub(" minutes", "m")
+  end
+
+  def distance
+    total_meters = 0.0
+
+    directions["routes"][0]["legs"].each do |leg|
+      leg["steps"].each do |step|
+        total_meters += step["distance"]["value"]
+      end
+    end
+
+    "#{((total_meters / 1000.0) * 0.621371).round(1)} mi"
   end
 
   def set_directions
