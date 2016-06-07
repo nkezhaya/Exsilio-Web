@@ -6,6 +6,11 @@ class Tour < ActiveRecord::Base
   has_many :waypoints, dependent: :destroy
 
   validates :name, presence: true
+  validate do |tour|
+    if tour.waypoints.length < 2
+      tour.errors.add(:base, "Need at least two waypoints.")
+    end
+  end
 
   accepts_nested_attributes_for :waypoints
 
