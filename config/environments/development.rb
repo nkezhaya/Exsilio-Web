@@ -40,4 +40,14 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   config.action_mailer.default_url_options = { host: "192.168.1.3", port: 3000 }
+
+  # Paperclip S3 configuration
+  config.paperclip_defaults = {
+    storage: :s3,
+    s3_credentials: {
+      bucket: Figaro.env.s3_bucket_name,
+      access_key_id: Figaro.env.aws_access_key,
+      secret_access_key: Figaro.env.aws_access_secret
+    }
+  }
 end

@@ -3,7 +3,7 @@ class Tour < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :waypoints
+  has_many :waypoints, dependent: :destroy
 
   validates :name, presence: true
 
@@ -64,6 +64,8 @@ class Tour < ActiveRecord::Base
   def duration
     total_seconds = 0
 
+    return "0 seconds" if directions.blank? || directions["routes"].blank?
+
     directions["routes"][0]["legs"].each do |leg|
       leg["steps"].each do |step|
         total_seconds += step["duration"]["value"]
@@ -78,11 +80,13 @@ class Tour < ActiveRecord::Base
 
     return "" if long_duration.blank?
 
-    long_duration.gsub(" hours", "h").gsub(" minutes", "m")
+    long_duration.gsub(" hours", "h").gsub(" minutes", "m").gsub(" seconds", "s")
   end
 
   def distance
     total_meters = 0.0
+
+    return "0 mi" if directions.blank? || directions["routes"].blank?
 
     directions["routes"][0]["legs"].each do |leg|
       leg["steps"].each do |step|
