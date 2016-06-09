@@ -9,7 +9,9 @@ class User < ActiveRecord::Base
     return false if token.blank?
 
     graph = Koala::Facebook::API.new(token)
-    me = graph.api("/me?fields=id,first_name,last_name,email,gender")
+    me = Rails.cache.fetch("#{Digest::SHA1.hexdigest(token)}/me", expires_in: 24.hours) do
+      graph.api("/me?fields=id,first_name,last_name,email,gender")
+    end
 
     where(facebook_uid: me["id"]).first_or_create do |user|
       user.email = me["email"]
