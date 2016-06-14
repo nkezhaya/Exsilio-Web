@@ -6,9 +6,9 @@ class ToursController < ApiController
   end
 
   def search
-    tours = Tour.search(params[:query])
+    tours = Tour.filters(params).search(params[:query])
 
-    render json: { total: tours.count, tours: Kaminari.paginate_array(tours).page(params[:page]).per(10) }
+    render json: { total: tours.count(:all), tours: Kaminari.paginate_array(tours).page(params[:page]).per(10) }
   end
 
   def show

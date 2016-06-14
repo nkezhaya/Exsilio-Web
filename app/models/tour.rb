@@ -14,7 +14,45 @@ class Tour < ActiveRecord::Base
 
   accepts_nested_attributes_for :waypoints
 
+  before_save :set_latitude_and_longitude
   before_save :set_directions
+
+  geocoded_by nil
+
+  scope :filters, ->(params) {
+    query = where(nil)
+
+    if min_waypoints = params.delete(:min_waypoints)
+      query = query.where("waypoints_count >= ?", min_waypoints)
+    end
+
+    if max_waypoints = params.delete(:max_waypoints)
+      query = query.where("waypoints_count <= ?", max_waypoints)
+    end
+
+    if min_seconds = params.delete(:min_seconds_required)
+      query = query.where("total_time_in_seconds >= ?", min_seconds)
+    end
+
+    if max_seconds = params.delete(:max_seconds_required)
+      query = query.where("total_time_in_seconds <= ?", max_seconds)
+    end
+
+    current_location = params.delete(:current_location)
+
+    if current_location.present?
+      current_location = [current_location[:latitude], current_location[:longitude]].map(&:to_f)
+      sort_by_distance = params.delete(:sort_by) == "Distance From Current Location"
+      max_distance = (params.delete(:max_distance_from_current_location) || 999999).to_i
+
+      args = [current_location, max_distance, units: :mi]
+      args.last[:order] = "distance" if sort_by_distance
+
+      query = query.near(*args)
+    end
+
+    return query
+  }
 
   pg_search_scope :search,
     against: [:name, :description],
@@ -71,21 +109,13 @@ class Tour < ActiveRecord::Base
   end
 
   def polyline
-    directions["routes"][0]["overview_polyline"]["points"] rescue nil
+    route["overview_polyline"]["points"] rescue nil
   end
 
   def duration
-    total_seconds = 0
+    return "0 seconds" if route.blank?
 
-    return "0 seconds" if directions.blank? || directions["routes"].blank?
-
-    directions["routes"][0]["legs"].each do |leg|
-      leg["steps"].each do |step|
-        total_seconds += step["duration"]["value"]
-      end
-    end
-
-    ActionController::Base.helpers.distance_of_time_in_words(total_seconds.seconds)
+    ActionController::Base.helpers.distance_of_time_in_words(total_time_in_seconds.seconds)
   end
 
   def duration_short
@@ -101,7 +131,7 @@ class Tour < ActiveRecord::Base
 
     return "0 mi" if directions.blank? || directions["routes"].blank?
 
-    directions["routes"][0]["legs"].each do |leg|
+    legs.each do |leg|
       leg["steps"].each do |step|
         total_meters += step["distance"]["value"]
       end
@@ -110,7 +140,14 @@ class Tour < ActiveRecord::Base
     "#{((total_meters / 1000.0) * 0.621371).round(1)} mi"
   end
 
+  def set_latitude_and_longitude
+    self.latitude = self.waypoints.first.try(:latitude)
+    self.longitude = self.waypoints.first.try(:longitude)
+  end
+
   def set_directions
+    return if route.present?
+
     url = "https://maps.googleapis.com/maps/api/directions/json?key=#{Figaro.env.google_maps_key}"
     waypoint_coordinates = waypoints.map { |waypoint| waypoint.coordinates_string }
 
@@ -126,5 +163,29 @@ class Tour < ActiveRecord::Base
     rescue
       puts "Exception: #{url}"
     end
+
+    return true if self.directions.blank?
+
+    total_seconds = 0
+
+    legs.each do |leg|
+      leg["steps"].each do |step|
+        total_seconds += step["duration"]["value"]
+      end
+    end
+
+    self.total_time_in_seconds = total_seconds
+  end
+
+  def legs
+    route["legs"] || []
+  rescue
+    []
+  end
+
+  def route
+    self.directions["routes"][0] || {}
+  rescue
+    {}
   end
 end

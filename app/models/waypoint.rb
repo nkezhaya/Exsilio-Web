@@ -1,5 +1,5 @@
 class Waypoint < ActiveRecord::Base
-  belongs_to :tour
+  belongs_to :tour, counter_cache: true
 
   default_scope -> { order("position ASC") }
 
