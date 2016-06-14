@@ -5,7 +5,14 @@ class Waypoint < ActiveRecord::Base
 
   has_attached_file :image
 
-  reverse_geocoded_by :latitude, :longitude
+  reverse_geocoded_by :latitude, :longitude do |obj, results|
+    if geo = results.first
+      obj.address = geo.address
+      obj.city = geo.city
+      obj.state = geo.state
+    end
+  end
+
   after_validation :reverse_geocode
 
   validates :name, presence: true

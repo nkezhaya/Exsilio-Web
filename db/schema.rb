@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160603162625) do
+ActiveRecord::Schema.define(version: 20160610154908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,8 @@ ActiveRecord::Schema.define(version: 20160603162625) do
     t.decimal  "latitude",           precision: 9, scale: 6
     t.decimal  "longitude",          precision: 9, scale: 6
     t.string   "address"
+    t.string   "city"
+    t.string   "state"
   end
 
   add_index "waypoints", ["position"], name: "index_waypoints_on_position", using: :btree

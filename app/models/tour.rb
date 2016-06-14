@@ -35,7 +35,7 @@ class Tour < ActiveRecord::Base
     }
 
     options.merge! include: { waypoints: waypoints, user: user },
-      methods: [:polyline, :duration, :duration_short, :distance, :display_image_url]
+      methods: [:polyline, :duration, :duration_short, :distance, :display_image_url, :city_state]
 
     if !full
       options.merge! except: :directions
@@ -54,6 +54,14 @@ class Tour < ActiveRecord::Base
     end
 
     return true
+  end
+
+  def city_state
+    if waypoint = waypoints.first
+      "#{waypoint.city}, #{waypoint.state}"
+    else
+      "--"
+    end
   end
 
   def display_image_url
