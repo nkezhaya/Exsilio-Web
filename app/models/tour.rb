@@ -19,6 +19,7 @@ class Tour < ActiveRecord::Base
 
   geocoded_by nil
 
+  scope :published, -> { where(published: true) }
   scope :filters, ->(params) {
     query = where(nil)
 

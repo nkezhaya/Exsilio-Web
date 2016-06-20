@@ -6,7 +6,7 @@ class ToursController < ApiController
   end
 
   def search
-    tours = Tour.filters(params).search(params[:query])
+    tours = Tour.published.filters(params).search(params[:query])
 
     render json: { total: tours.count(:all), tours: Kaminari.paginate_array(tours).page(params[:page]).per(10) }
   end
@@ -27,6 +27,16 @@ class ToursController < ApiController
     end
   end
 
+  def update
+    tour = current_user.tours.find(params[:id])
+
+    if tour.update_attributes(tour_params)
+      render json: tour
+    else
+      render json: { errors: tour.errors.full_messages.join(". ") }
+    end
+  end
+
   def destroy
     tour = current_user.tours.find(params[:id])
 
@@ -39,6 +49,6 @@ class ToursController < ApiController
 
   private
   def tour_params
-    params.require(:tour).permit(:name, :description, waypoints_attributes: [:name, :position, :image, :latitude, :longitude])
+    params.require(:tour).permit(:name, :description, :published, waypoints_attributes: [:name, :position, :image, :latitude, :longitude])
   end
 end

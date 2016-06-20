@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160614173130) do
+ActiveRecord::Schema.define(version: 20160620173017) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,17 +20,19 @@ ActiveRecord::Schema.define(version: 20160614173130) do
     t.integer  "user_id"
     t.string   "name"
     t.string   "description"
-    t.datetime "created_at",                                                null: false
-    t.datetime "updated_at",                                                null: false
+    t.datetime "created_at",                                                    null: false
+    t.datetime "updated_at",                                                    null: false
     t.jsonb    "directions"
     t.integer  "waypoints_count"
     t.integer  "total_time_in_seconds",                         default: 0
     t.decimal  "latitude",              precision: 9, scale: 6
     t.decimal  "longitude",             precision: 9, scale: 6
+    t.boolean  "published",                                     default: false
   end
 
   add_index "tours", ["latitude"], name: "index_tours_on_latitude", using: :btree
   add_index "tours", ["longitude"], name: "index_tours_on_longitude", using: :btree
+  add_index "tours", ["published"], name: "index_tours_on_published", using: :btree
   add_index "tours", ["user_id"], name: "index_tours_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
