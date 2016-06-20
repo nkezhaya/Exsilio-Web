@@ -7,8 +7,10 @@ class Tour < ActiveRecord::Base
 
   validates :name, presence: true
   validate do |tour|
-    if tour.waypoints.length < 2
-      tour.errors.add(:base, "Need at least two waypoints.")
+    if tour.published?
+      if tour.waypoints.length < 2
+        tour.errors.add(:base, "Need at least two waypoints.")
+      end
     end
   end
 
