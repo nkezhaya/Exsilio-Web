@@ -2,7 +2,7 @@ class ToursController < ApiController
   before_action :authenticate_user!
 
   def index
-    render json: current_user.tours
+    render json: current_user.tours.order("published ASC, created_at DESC")
   end
 
   def search
