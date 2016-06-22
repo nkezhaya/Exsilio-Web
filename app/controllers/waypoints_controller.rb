@@ -2,6 +2,17 @@ class WaypointsController < ApiController
   before_action :authenticate_user!
   before_action :set_tour
 
+  def create
+    waypoint = @tour.waypoints.new(waypoint_params)
+    waypoint.position = (@tour.waypoints.map(&:position).select(&:present?).max || 0) + 1
+
+    if waypoint.save
+      render json: waypoint
+    else
+      render json: { errors: waypiont.errors.full_messages.join(". ") }
+    end
+  end
+
   def update
     waypoint = @tour.waypoints.find(params[:id])
 
