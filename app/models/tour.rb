@@ -154,6 +154,7 @@ class Tour < ActiveRecord::Base
     url = "https://maps.googleapis.com/maps/api/directions/json?key=#{Figaro.env.google_maps_key}"
     waypoint_coordinates = waypoints.map { |waypoint| waypoint.coordinates_string }
 
+    url << "&mode=walking"
     url << "&origin=#{waypoint_coordinates.shift}"
     url << "&destination=#{waypoint_coordinates.pop}"
 
