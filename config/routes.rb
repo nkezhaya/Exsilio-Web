@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resources :tours do
     get "search", on: :collection
+    get "start", on: :member
 
     resources :waypoints, only: [:create, :update, :destroy] do
       put "reposition", on: :collection

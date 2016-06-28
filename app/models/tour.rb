@@ -151,22 +151,7 @@ class Tour < ActiveRecord::Base
   def set_directions
     return if route.present?
 
-    url = "https://maps.googleapis.com/maps/api/directions/json?key=#{Figaro.env.google_maps_key}"
-    waypoint_coordinates = waypoints.map { |waypoint| waypoint.coordinates_string }
-
-    url << "&mode=walking"
-    url << "&origin=#{waypoint_coordinates.shift}"
-    url << "&destination=#{waypoint_coordinates.pop}"
-
-    if waypoint_coordinates.count > 0
-      url << "&waypoints=#{waypoint_coordinates.join("|")}"
-    end
-
-    begin
-      self.directions = RestClient.get(url)
-    rescue
-      puts "Exception: #{url}"
-    end
+    self.directions = get_directions()
 
     return true if self.directions.blank?
 
@@ -179,6 +164,35 @@ class Tour < ActiveRecord::Base
     end
 
     self.total_time_in_seconds = total_seconds
+  end
+
+  def get_directions(starting_coordinates_string = nil)
+    return nil if waypoints.length == 0
+
+    url = "https://maps.googleapis.com/maps/api/directions/json?key=#{Figaro.env.google_maps_key}"
+
+    if starting_coordinates_string.present?
+      url << "&origin=#{starting_coordinates_string}"
+      url << "&destination=#{waypoints.first.coordinates_string}"
+      url << "&mode=driving"
+    else
+      waypoint_coordinates = waypoints.map { |waypoint| waypoint.coordinates_string }
+
+      url << "&origin=#{waypoint_coordinates.shift}"
+      url << "&destination=#{waypoint_coordinates.pop}"
+      url << "&mode=walking"
+
+      if waypoint_coordinates.count > 0
+        url << "&waypoints=#{waypoint_coordinates.join("|")}"
+      end
+    end
+
+    begin
+      return RestClient.get(url)
+    rescue
+      puts "Exception: #{url}"
+      return nil
+    end
   end
 
   def legs

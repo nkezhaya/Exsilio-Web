@@ -17,6 +17,12 @@ class ToursController < ApiController
     render json: tour, full: true
   end
 
+  def start
+    tour = current_user.tours.find(params[:id])
+
+    render json: tour.get_directions("#{params[:latitude].to_f},#{params[:longitude].to_f}")
+  end
+
   def create
     tour = current_user.tours.new(tour_params)
 
