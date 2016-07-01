@@ -76,7 +76,7 @@ class Tour < ActiveRecord::Base
     }
 
     options.merge! include: { waypoints: waypoints, user: user },
-      methods: [:polyline, :duration, :duration_short, :distance, :display_image_url, :city_state]
+      methods: [:duration, :duration_short, :distance, :display_image_url, :city_state]
 
     if !full
       options.merge! except: :directions
@@ -109,10 +109,6 @@ class Tour < ActiveRecord::Base
     self.waypoints.find { |waypoint|
       waypoint.image.present?
     }.try(:image).try(:url, :original)
-  end
-
-  def polyline
-    route["overview_polyline"]["points"] rescue nil
   end
 
   def duration
