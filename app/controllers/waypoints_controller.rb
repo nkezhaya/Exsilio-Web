@@ -45,6 +45,6 @@ class WaypointsController < ApiController
   end
 
   def waypoint_params
-    params.require(:waypoint).permit(:name, :position, :image, :latitude, :longitude)
+    params.require(:waypoint).permit(:name, :description, :position, :image, :latitude, :longitude)
   end
 end
