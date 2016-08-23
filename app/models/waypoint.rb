@@ -14,6 +14,8 @@ class Waypoint < ActiveRecord::Base
   end
 
   after_validation :reverse_geocode
+  after_create :set_tour_directions
+  after_destroy :set_tour_directions
 
   validates :name, presence: true
   validates :latitude, presence: true
@@ -34,5 +36,10 @@ class Waypoint < ActiveRecord::Base
 
   def image_url
     image.url(:original)
+  end
+
+  def set_tour_directions
+    tour.set_directions
+    tour.save
   end
 end

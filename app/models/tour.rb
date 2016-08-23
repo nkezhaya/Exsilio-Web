@@ -17,7 +17,6 @@ class Tour < ActiveRecord::Base
   accepts_nested_attributes_for :waypoints
 
   before_save :set_latitude_and_longitude
-  before_save :set_directions
 
   geocoded_by nil
 
@@ -145,8 +144,6 @@ class Tour < ActiveRecord::Base
   end
 
   def set_directions
-    return if route.present?
-
     self.directions = get_directions()
 
     return true if self.directions.blank?
@@ -163,7 +160,7 @@ class Tour < ActiveRecord::Base
   end
 
   def get_directions(starting_coordinates_string = nil)
-    return nil if waypoints.length == 0
+    return nil if waypoints.length < 2
 
     url = "https://maps.googleapis.com/maps/api/directions/json?key=#{Figaro.env.google_maps_key}"
 
