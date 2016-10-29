@@ -12,7 +12,7 @@ class ToursController < ApiController
   end
 
   def show
-    tour = current_user.tours.find(params[:id])
+    tour = Tour.find(params[:id])
 
     render json: tour, full: true
   end
