@@ -4,7 +4,7 @@ class SessionsController < Devise::SessionsController
 
     if user
       if user.valid_password?(user_params[:password])
-        render json: { email: user.email, authentication_token: user.authentication_token }
+        render json: { user: user }, with_tokens: true
       else
         render json: { status: "Error", error: "Invalid email/password." }
       end

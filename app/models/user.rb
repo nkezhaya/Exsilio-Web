@@ -4,6 +4,9 @@ class User < ActiveRecord::Base
 
   acts_as_token_authenticatable
 
+  validates_presence_of :first_name
+  validates_presence_of :last_name
+
   attr_reader :picture_remote_url
   has_attached_file :picture
   validates_attachment_content_type :picture, content_type: /\Aimage\/.*\Z/
@@ -37,6 +40,11 @@ class User < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super(options.merge(methods: :user_picture_url, except: [:authentication_token, :facebook_token]))
+    with_tokens = options.delete(:with_tokens) == true
+    options.merge!(methods: :user_picture_url)
+    unless with_tokens
+      options.merge!(except: [:authentication_token, :facebook_token])
+    end
+    super(options)
   end
 end
