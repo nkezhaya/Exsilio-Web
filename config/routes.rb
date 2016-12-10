@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: "registrations", sessions: "sessions" }
-  post "users" => "users#create"
   get "api" => "api#index"
+  get "users/me" => "users#me"
 
   root "api#index"
 

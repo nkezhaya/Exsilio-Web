@@ -1,16 +1,7 @@
-class UsersController < ApplicationController
-  def create
-    user = User.from_token(user_param[:token])
+class UsersController < ApiController
+  before_action :authenticate_user!
 
-    if user.save
-      render json: { status: "Success" }
-    else
-      render json: { status: "Error" }
-    end
-  end
-
-  private
-  def user_param
-    params.require(:user).permit(:token)
+  def me
+    render json: { user: current_user }
   end
 end
