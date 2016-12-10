@@ -1,11 +1,16 @@
 class User < ActiveRecord::Base
+  devise :database_authenticatable, :registerable,
+         :recoverable, :trackable, :validatable
+
+  acts_as_token_authenticatable
+
   attr_reader :picture_remote_url
   has_attached_file :picture
   validates_attachment_content_type :picture, content_type: /\Aimage\/.*\Z/
 
   has_many :tours
 
-  def self.from_token(token)
+  def self.from_facebook_token(token)
     return false if token.blank?
 
     graph = Koala::Facebook::API.new(token)
@@ -18,7 +23,7 @@ class User < ActiveRecord::Base
       user.first_name = me["first_name"]
       user.last_name = me["last_name"]
       user.picture_remote_url = graph.get_picture("me", type: "large") rescue nil
-      user.token = token
+      user.facebook_token = token
     end
   end
 
@@ -32,6 +37,6 @@ class User < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super(options.merge(methods: :user_picture_url, except: :token))
+    super(options.merge(methods: :user_picture_url, except: [:authentication_token, :facebook_token]))
   end
 end

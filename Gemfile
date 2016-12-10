@@ -1,7 +1,7 @@
-ruby "2.3.0"
+ruby "2.3.3"
 source "https://rubygems.org"
 
-gem "rails", "~> 4.2"
+gem "rails", "~> 4.2.7"
 gem "pg", "~> 0.15"
 gem "uglifier", ">= 1.3.0"
 gem "koala"
@@ -12,6 +12,8 @@ gem "geocoder"
 gem "pg_search"
 gem "kaminari"
 gem "aws-sdk"
+gem "devise"
+gem "simple_token_authentication", "~> 1.0"
 
 gem "rails_12factor"
 
