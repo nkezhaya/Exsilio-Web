@@ -1,7 +1,7 @@
-ruby "2.3.3"
+ruby "2.4.1"
 source "https://rubygems.org"
 
-gem "rails", "~> 4.2.7"
+gem "rails", "~> 4.2.10"
 gem "pg", "~> 0.15"
 gem "uglifier", ">= 1.3.0"
 gem "koala"
@@ -22,6 +22,7 @@ gem "jbuilder", "~> 2.0"
 
 group :development, :test do
   gem "byebug"
+  gem "json", github: "flori/json", branch: "v1.8"
 end
 
 group :development do
