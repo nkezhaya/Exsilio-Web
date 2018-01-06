@@ -33,6 +33,25 @@ class ToursController < ApiController
     end
   end
 
+  def clone
+    tour = current_user.tours.find(params[:id])
+    new_tour = tour.dup
+    new_tour.name = tour_params[:name]
+
+    new_tour.waypoints = tour.waypoints.map do |waypoint|
+      new_waypoint = waypoint.dup
+      new_waypoint.tour_id = nil
+      new_waypoint.image = waypoint.image
+      new_waypoint
+    end
+
+    if new_tour.save
+      render json: tour
+    else
+      render json: { errors: tour.errors.full_messages.join(". ") }
+    end
+  end
+
   def update
     tour = current_user.tours.find(params[:id])
 

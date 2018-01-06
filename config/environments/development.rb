@@ -39,7 +39,7 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  config.action_mailer.default_url_options = { host: "192.168.1.3", port: 3000 }
+  config.action_mailer.default_url_options = { host: "192.168.1.35", port: 3000 }
 
   # Paperclip S3 configuration
   config.paperclip_defaults = {
