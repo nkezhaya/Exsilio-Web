@@ -16,4 +16,5 @@ Rails.application.routes.draw do
   end
 
   post "passwords" => "passwords#create"
+  patch "passwords" => "passwords#update"
 end
