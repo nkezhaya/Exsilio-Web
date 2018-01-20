@@ -14,6 +14,7 @@ gem "kaminari"
 gem "aws-sdk"
 gem "devise"
 gem "simple_token_authentication", "~> 1.0"
+gem "sendgrid-ruby"
 
 gem "rails_12factor"
 

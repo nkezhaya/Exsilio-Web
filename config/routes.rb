@@ -14,4 +14,6 @@ Rails.application.routes.draw do
       put "reposition", on: :collection
     end
   end
+
+  post "passwords" => "passwords#create"
 end
