@@ -1,8 +1,6 @@
-class PasswordsController < ApiController
+class PasswordsController < ApplicationController
   require "securerandom"
   include SendGrid
-
-  #before_action :authenticate_user!, only: [:update]
 
   def create
     user = User.find_by(email: params[:email])
